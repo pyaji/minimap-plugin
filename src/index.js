@@ -13,16 +13,21 @@ function install(editor, params) {
     params.size = params.size || SIZE.MIDDLE;
 
     const el = document.createElement('div');
+    const component = params.vueComponent || Map;
+    const options = params.vueOptions || {};
 
     editor.view.container.appendChild(el);
 
     const app = new Vue({
-        render: h => params.enable ? h(Map, { props: {
-            size: params.size,
-            nodes: editor.nodes,
-            views: editor.view.nodes,
-            view: editor.view
-        }}) : null
+        ...options,
+        render: h => params.enable ? h(component, {
+            props: {
+                size: params.size,
+                nodes: editor.nodes,
+                views: editor.view.nodes,
+                view: editor.view
+            }
+        }) : null
     }).$mount(el);
 
     const updateTransform = () => app.$children[0] && app.$children[0].updateTransform();
@@ -37,5 +42,6 @@ function install(editor, params) {
 
 export default {
     install,
+    MiniMapComponent: Map,
     ...SIZE
 }
